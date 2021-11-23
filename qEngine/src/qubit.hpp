@@ -17,11 +17,12 @@ typedef std::complex<double> Component;
 
 class Qubit {
 public:
+    Qubit(const Qubit &) = delete;
     Qubit() = default;
     Qubit(int n, double component, ...);
 
-    static Qubit zero(int n);
-    static Qubit one(int n);
+    void zero(int n);
+    void one(int n);
 
     [[nodiscard]] bool isValid() const;
     [[nodiscard]] int size() const;
@@ -32,6 +33,8 @@ public:
 
     [[nodiscard]] std::vector<double> probabilities() const;
     [[nodiscard]] int measure() const;
+
+    void operator=(const Qubit &) = delete;
 
 private:
     friend std::ostream &operator <<(std::ostream &os, const Qubit &q);

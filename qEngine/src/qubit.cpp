@@ -26,41 +26,35 @@ Qubit::Qubit(int n, double component, ...) {
     va_end(list);
 }
 
-Qubit Qubit::zero(int n) {
+void Qubit::zero(int n) {
     if (n <= 0) {
         n = 1;
     }
 
     int amount = std::pow(2, n);
-
-    Qubit ret;
-    ret._size = n;
-    ret._components.emplace_back(1, 0);
+    _size = n;
+    _components.clear();
+    _components.emplace_back(1, 0);
 
     for (int i = 0; i < amount - 1; ++i) {
-        ret._components.emplace_back(0, 0);
+        _components.emplace_back(0, 0);
     }
-
-    return ret;
 }
 
-Qubit Qubit::one(int n) {
+void Qubit::one(int n) {
     if (n <= 0) {
         n = 1;
     }
 
     int amount = std::pow(2, n);
-
-    Qubit ret;
-    ret._size = n;
-    ret._components.emplace_back(0, 0);
-    ret._components.emplace_back(1, 0);
+    _size = n;
+    _components.clear();
+    _components.emplace_back(0, 0);
+    _components.emplace_back(1, 0);
 
     for (int i = 0; i < amount - 2; ++i) {
-        ret._components.emplace_back(0, 0);
+        _components.emplace_back(0, 0);
     }
-
-    return ret;
 }
 
 bool Qubit::isValid() const {
