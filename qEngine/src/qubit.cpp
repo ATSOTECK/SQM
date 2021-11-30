@@ -9,6 +9,34 @@
 #include <cstdarg>
 #include <random>
 
+void Qubit::Register(asIScriptEngine *engine) {
+    int r;
+    r = engine->RegisterEnum("Kind"); assert(r >= 0);
+    r = engine->RegisterEnumValue("Kind", "Zero", 0); assert(r >= 0);
+    r = engine->RegisterEnumValue("Kind", "One", 1); assert(r >= 0);
+
+    r = engine->RegisterObjectType("Qubit", sizeof(Qubit), asOBJ_VALUE | asOBJ_APP_CLASS_CDAK); assert(r >= 0);
+    r = engine->RegisterObjectBehaviour("Qubit", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(qubitConstructorA), asCALL_CDECL_OBJLAST); assert(r >= 0);
+    r = engine->RegisterObjectBehaviour("Qubit", asBEHAVE_CONSTRUCT, "void f(Kind kind, int n)", asFUNCTION(qubitConstructorB), asCALL_CDECL_OBJLAST); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "void zero(int n)", asMETHODPR(Qubit, zero, (int), void), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "void one(int n)", asMETHODPR(Qubit, one, (int), void), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "bool isValid()", asMETHODPR(Qubit, isValid, (void)const, bool), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "int size()", asMETHODPR(Qubit, size, (void)const, int), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "size_t count()", asMETHODPR(Qubit, count, (void)const, size_t), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "int measure()", asMETHODPR(Qubit, measure, (void)const, int), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "string toString()", asMETHODPR(Qubit, toString, (void)const, std::string), asCALL_THISCALL); assert(r >= 0);
+
+    r = engine->RegisterGlobalFunction("void print(const Qubit &q)", asFUNCTION(printQubit), asCALL_CDECL); assert(r >= 0);
+}
+
+Qubit::Qubit(Kind kind, int n) {
+    if (kind == Zero) {
+        zero(n);
+    } else if (kind == One) {
+        one(n);
+    }
+}
+
 Qubit::Qubit(int n, double component, ...) {
     _size = n;
     int amount = static_cast<int>(std::pow(2, _size)) * 2;
@@ -113,6 +141,19 @@ int Qubit::measure() const {
     return distribution(gen);
 }
 
+std::string Qubit::toString() const {
+    std::stringstream str;
+
+    str << "qubits: " << _size << std::endl;
+    str << "components: [real, imag]" << std::endl;
+
+    for (const auto &c : _components) {
+        str << "[" << c.real() << ", " << c.imag() << "]" << std::endl;
+    }
+
+    return str.str();
+}
+
 std::ostream &operator <<(std::ostream &os, const Qubit &q) {
     os << "qubits: " << q._size << std::endl;
     os << "components: [real, imag]" << std::endl;
@@ -122,4 +163,16 @@ std::ostream &operator <<(std::ostream &os, const Qubit &q) {
     }
 
     return os;
+}
+
+void qubitConstructorA(void *mem) {
+    new(mem) Qubit();
+}
+
+void qubitConstructorB(Qubit::Kind kind, int n, void *mem) {
+    new(mem) Qubit(kind, n);
+}
+
+void printQubit(const Qubit &q) {
+    db(q);
 }
