@@ -35,7 +35,7 @@ public:
 
     [[nodiscard]] bool isValid() const;
     [[nodiscard]] int size() const;
-    [[nodiscard]] size_t count() const;
+    [[nodiscard]] int count() const;
 
     [[nodiscard]] VectorXcd toVector() const;
     void update(const VectorXcd &v);
@@ -44,19 +44,22 @@ public:
     [[nodiscard]] int measure() const;
 
     [[nodiscard]] std::string toString() const;
+    
+    void addRef();
+    void release();
 
     //void operator=(const Qubit &) = delete;
 
 private:
     friend std::ostream &operator <<(std::ostream &os, const Qubit &q);
 
+    int _refCount{1};
     int _size{};
     std::vector<Component> _components;
 };
 
-
-void qubitConstructorA(void *mem);
-void qubitConstructorB(Qubit::Kind kind, int n, void *mem);
+Qubit *refFactoryA();
+Qubit *refFactoryB(Qubit::Kind kind, int n);
 
 void printQubit(const Qubit &q);
 

@@ -1,0 +1,10 @@
+void run() {
+    Qubit q(Zero, 2);
+    print(q);
+
+    hadamard(q);
+    zGate(q);
+    print(q);
+
+    println("valid? " + (q.isValid() ? "yes" : "no"));
+}

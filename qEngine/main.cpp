@@ -55,8 +55,9 @@ asIScriptEngine *initAngelScript() {
     RegisterStdString(engine);
     RegisterScriptHandle(engine);
     RegisterScriptWeakRef(engine);
-
-    r = engine->RegisterGlobalFunction("void println(const string &str)", asFUNCTION(println), asCALL_CDECL); assert( r >= 0 );
+    
+    r = engine->RegisterObjectType("size_t", sizeof(size_t), asOBJ_VALUE | asOBJ_POD); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void println(const string &in)", asFUNCTION(println), asCALL_CDECL); assert( r >= 0 );
 
     Qubit::Register(engine);
     registerGates(engine);
@@ -73,7 +74,7 @@ int main() {
         exit(0);
     }
 
-    r = builer.AddSectionFromFile("main.sqm");
+    r = builer.AddSectionFromFile("../scripts/tst.sqm");
     if (r < 0) {
         db("Could not load file.");
         exit(0);

@@ -106,8 +106,8 @@ void zGate(Qubit &q) {
 
 void registerGates(asIScriptEngine *engine) {
     int r;
-    r = engine->RegisterGlobalFunction("void hadamard(Qubit &q)", asFUNCTION(hadamard), asCALL_CDECL); assert(r >= 0);
-    r = engine->RegisterGlobalFunction("void xGate(Qubit &q)", asFUNCTION(xGate), asCALL_CDECL); assert(r >= 0);
-    r = engine->RegisterGlobalFunction("void yGate(Qubit &q)", asFUNCTION(yGate), asCALL_CDECL); assert(r >= 0);
-    r = engine->RegisterGlobalFunction("void zGate(Qubit &q)", asFUNCTION(zGate), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void hadamard(Qubit &inout)", asFUNCTION(hadamard), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void xGate(Qubit &inout)", asFUNCTION(xGate), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void yGate(Qubit &inout)", asFUNCTION(yGate), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void zGate(Qubit &inout)", asFUNCTION(zGate), asCALL_CDECL); assert(r >= 0);
 }

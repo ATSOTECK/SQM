@@ -15,18 +15,21 @@ void Qubit::Register(asIScriptEngine *engine) {
     r = engine->RegisterEnumValue("Kind", "Zero", 0); assert(r >= 0);
     r = engine->RegisterEnumValue("Kind", "One", 1); assert(r >= 0);
 
-    r = engine->RegisterObjectType("Qubit", sizeof(Qubit), asOBJ_VALUE | asOBJ_APP_CLASS_CDAK); assert(r >= 0);
-    r = engine->RegisterObjectBehaviour("Qubit", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(qubitConstructorA), asCALL_CDECL_OBJLAST); assert(r >= 0);
-    r = engine->RegisterObjectBehaviour("Qubit", asBEHAVE_CONSTRUCT, "void f(Kind kind, int n)", asFUNCTION(qubitConstructorB), asCALL_CDECL_OBJLAST); assert(r >= 0);
+    r = engine->RegisterObjectType("Qubit", sizeof(Qubit), asOBJ_REF); assert(r >= 0);
+    r = engine->RegisterObjectBehaviour("Qubit", asBEHAVE_FACTORY, "Qubit@ f()", asFUNCTION(refFactoryA), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterObjectBehaviour("Qubit", asBEHAVE_FACTORY, "Qubit@ f(Kind kind, int n)", asFUNCTION(refFactoryB), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterObjectBehaviour("Qubit", asBEHAVE_ADDREF, "void f()", asMETHOD(Qubit, addRef), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectBehaviour("Qubit", asBEHAVE_RELEASE, "void f()", asMETHOD(Qubit, release), asCALL_THISCALL); assert(r >= 0);
+    
     r = engine->RegisterObjectMethod("Qubit", "void zero(int n)", asMETHODPR(Qubit, zero, (int), void), asCALL_THISCALL); assert(r >= 0);
     r = engine->RegisterObjectMethod("Qubit", "void one(int n)", asMETHODPR(Qubit, one, (int), void), asCALL_THISCALL); assert(r >= 0);
     r = engine->RegisterObjectMethod("Qubit", "bool isValid()", asMETHODPR(Qubit, isValid, (void)const, bool), asCALL_THISCALL); assert(r >= 0);
     r = engine->RegisterObjectMethod("Qubit", "int size()", asMETHODPR(Qubit, size, (void)const, int), asCALL_THISCALL); assert(r >= 0);
-    r = engine->RegisterObjectMethod("Qubit", "size_t count()", asMETHODPR(Qubit, count, (void)const, size_t), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "int count()", asMETHODPR(Qubit, count, (void)const, int), asCALL_THISCALL); assert(r >= 0);
     r = engine->RegisterObjectMethod("Qubit", "int measure()", asMETHODPR(Qubit, measure, (void)const, int), asCALL_THISCALL); assert(r >= 0);
     r = engine->RegisterObjectMethod("Qubit", "string toString()", asMETHODPR(Qubit, toString, (void)const, std::string), asCALL_THISCALL); assert(r >= 0);
 
-    r = engine->RegisterGlobalFunction("void print(const Qubit &q)", asFUNCTION(printQubit), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void print(const Qubit &in)", asFUNCTION(printQubit), asCALL_CDECL); assert(r >= 0);
 }
 
 Qubit::Qubit(Kind kind, int n) {
@@ -100,8 +103,8 @@ int Qubit::size() const {
     return _size;
 }
 
-size_t Qubit::count() const {
-    return _components.size();
+int Qubit::count() const {
+    return static_cast<int>(_components.size());
 }
 
 VectorXcd Qubit::toVector() const {
@@ -136,7 +139,7 @@ int Qubit::measure() const {
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::discrete_distribution<double> distribution(prob.begin(), prob.end());
+    std::discrete_distribution<int> distribution(prob.begin(), prob.end());
 
     return distribution(gen);
 }
@@ -154,6 +157,16 @@ std::string Qubit::toString() const {
     return str.str();
 }
 
+void Qubit::addRef() {
+    ++_refCount;
+}
+
+void Qubit::release() {
+    if (--_refCount == 0) {
+        delete this;
+    }
+}
+
 std::ostream &operator <<(std::ostream &os, const Qubit &q) {
     os << "qubits: " << q._size << std::endl;
     os << "components: [real, imag]" << std::endl;
@@ -165,12 +178,12 @@ std::ostream &operator <<(std::ostream &os, const Qubit &q) {
     return os;
 }
 
-void qubitConstructorA(void *mem) {
-    new(mem) Qubit();
+Qubit *refFactoryA() {
+    return new Qubit();
 }
 
-void qubitConstructorB(Qubit::Kind kind, int n, void *mem) {
-    new(mem) Qubit(kind, n);
+Qubit *refFactoryB(Qubit::Kind kind, int n) {
+    return new Qubit(kind, n);
 }
 
 void printQubit(const Qubit &q) {
