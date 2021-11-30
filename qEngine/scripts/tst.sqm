@@ -7,4 +7,6 @@ void run() {
     print(q);
 
     println("valid? " + (q.isValid() ? "yes" : "no"));
+
+    println("measure: " + q.measure());
 }

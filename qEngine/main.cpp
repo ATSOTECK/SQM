@@ -44,7 +44,7 @@ void messageCallback(const asSMessageInfo &msg) {
 }
 
 void println(const std::string &str) {
-    db(str << std::endl);
+    db(str);
 }
 
 asIScriptEngine *initAngelScript() {
@@ -65,61 +65,50 @@ asIScriptEngine *initAngelScript() {
     return engine;
 }
 
-int main() {
-    asIScriptEngine *engine = initAngelScript();
-    CScriptBuilder builer;
-    int r = builer.StartNewModule(engine, "SQM");
+void run(asIScriptEngine *engine) {
+    CScriptBuilder builder;
+    int r = builder.StartNewModule(engine, "SQM");
     if (r < 0) {
         db("Error making module. Probably no memory.");
         exit(0);
     }
-
-    r = builer.AddSectionFromFile("../scripts/tst.sqm");
+    
+    r = builder.AddSectionFromFile("../scripts/tst.sqm");
     if (r < 0) {
         db("Could not load file.");
         exit(0);
     }
-
-    r = builer.BuildModule();
+    
+    r = builder.BuildModule();
     if (r < 0) {
         db("Errors.");
         exit(0);
     }
-
+    
     asIScriptModule *mod = engine->GetModule("SQM");
     asIScriptFunction *func = mod->GetFunctionByDecl("void run()");
-
+    
     if (func == nullptr) {
         db("The function must have 'void run()' to run.");
         exit(0);
     }
-
+    
     asIScriptContext *ctx = engine->CreateContext();
     ctx->Prepare(func);
     r = ctx->Execute();
-
+    
     if (r == asEXECUTION_EXCEPTION) {
         db("Exception: " << ctx->GetExceptionString());
     }
-
+    
     ctx->Release();
+}
+
+int main() {
+    asIScriptEngine *engine = initAngelScript();
+    run(engine);
+    
     engine->ShutDownAndRelease();
-
-    return 0;
-
-    Qubit qubit(Qubit::Zero, 4);
-
-    /*Qubit a = Qubit(1, ONE_OVER_SQRT2, 0, ONE_OVER_SQRT2, 0);
-    a.print();
-    std::cout << a.isValid() << std::endl;*/
-
-    db(qubit);
-    hadamard(qubit);
-    zGate(qubit);
-    db(qubit);
-
-    db("valid? " << (qubit.isValid() ? "yes" : "no"));
-    db("measure: " << qubit.measure());
 
     return 0;
 }
