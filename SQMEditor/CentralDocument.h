@@ -25,6 +25,9 @@ signals:
     void closeCurrent();
     void documentSelected(QString);
     
+protected:
+    void paintEvent(QPaintEvent *);
+    
 private:
     QString _title;
     QHBoxLayout *_layout;
@@ -59,6 +62,7 @@ signals:
 private:
     Titlebar *_titlebar;
     QStackedWidget *_stack;
+    QStringList _names;
     QVBoxLayout *_layout;
     
     bool _titlebarAdded;

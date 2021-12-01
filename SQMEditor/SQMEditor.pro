@@ -9,13 +9,23 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    AddRemoveText.cpp \
     CentralDocument.cpp \
+    CentralWidget.cpp \
+    CodeEditor.cpp \
+    Highlighter.cpp \
+    MiniMap.cpp \
     main.cpp \
     MainWindow.cpp
 
 HEADERS += \
+    AddRemoveText.h \
     CentralDocument.h \
+    CentralWidget.h \
+    CodeEditor.h \
+    Highlighter.h \
     MainWindow.h \
+    MiniMap.h \
     common.h
 
 FORMS += \
