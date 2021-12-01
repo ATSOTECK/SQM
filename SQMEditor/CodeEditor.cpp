@@ -191,7 +191,7 @@ void CodeEditor::blockOrColumnChanged() {
     int b = textCursor().blockNumber() + 1;
     int t = blockCount();
     int c = textCursor().columnNumber();
-    QString statusInfo = QString("%1/%3: %2").arg(b).arg(c).arg(t);
+    QString statusInfo = QString("%1/%3: %2  ").arg(b).arg(c).arg(t);
     emit statusInfoChanged(statusInfo);
 }
 

@@ -23,10 +23,11 @@ MainWindow::MainWindow(QWidget *parent)
     
     connect(e, SIGNAL(statusInfoChanged(QString)), this, SLOT(updateStatusInfoLabel(QString)));
     
-    _statusLabel->setText("1/1: 0");
+    _statusLabel->setText("1/1: 0  ");
     _statusLabel->setFont(QFont("Monaco"));
-    _statusLabel->setStyleSheet("color: #929292;");
-    statusBar()->addWidget(_statusLabel);
+    _statusLabel->setStyleSheet("color:#929292;");
+    statusBar()->addPermanentWidget(_statusLabel);
+    statusBar()->setStyleSheet("background: #252526;");
 }
 
 MainWindow::~MainWindow() {
