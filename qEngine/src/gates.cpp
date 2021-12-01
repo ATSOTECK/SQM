@@ -8,6 +8,8 @@
 
 #include <Eigen/Dense>
 
+using namespace std::complex_literals;
+
 using Eigen::MatrixXd;
 using Eigen::MatrixXcd;
 using Eigen::VectorXcd;
@@ -73,8 +75,8 @@ void xGate(Qubit &q) {
 void yGate(Qubit &q) {
     MatrixXcd baseY = MatrixXd(2, 2);
     baseY.setZero();
-    baseY(0, 1) = std::complex<double>(0, -1);
-    baseY(1, 0) = std::complex<double>(0, 1);
+    baseY(0, 1) = -1i;
+    baseY(1, 0) = 1i;
     MatrixXcd y = baseY;
 
     for (int i = 1; i < q.size(); ++i) {
@@ -104,10 +106,75 @@ void zGate(Qubit &q) {
     q.update(res);
 }
 
+void sqrtX(Qubit &q) {
+    MatrixXcd baseSX = MatrixXd(2, 2);
+    baseSX.setZero();
+    baseSX(0, 0) = E_TO_IPI_OVER_4;
+    baseSX(0, 1) = E_TO_MINUS_IPI_OVER_4;
+    baseSX(1, 0) = E_TO_MINUS_IPI_OVER_4;
+    baseSX(1, 1) = E_TO_IPI_OVER_4;
+    baseSX *= ONE_OVER_SQRT2;
+    
+    MatrixXcd sx = baseSX;
+    
+    for (int i = 1; i < q.size(); ++i) {
+        sx = kroneckerProduct(baseSX, sx);
+        //db(i << " sx:\n" << sx);
+    }
+    
+    VectorXcd v = q.toVector();
+    VectorXcd res = (sx * v);
+    q.update(res);
+}
+
+void sGate(Qubit &q) {
+    MatrixXcd baseS = MatrixXd(2, 2);
+    baseS.setZero();
+    baseS(0, 0) = 1;
+    baseS(1, 1) = 1i;
+    MatrixXcd s = baseS;
+    
+    for (int i = 1; i < q.size(); ++i) {
+        s = kroneckerProduct(baseS, s);
+        //db(i << " s:\n" << s);
+    }
+    
+    VectorXcd v = q.toVector();
+    VectorXcd res = (s * v);
+    q.update(res);
+}
+
+void tGate(Qubit &q) {
+    MatrixXcd baseT = MatrixXd(2, 2);
+    baseT.setZero();
+    baseT(0, 0) = 1;
+    baseT(1, 1) = E_TO_IPI_OVER_4;
+    MatrixXcd t = baseT;
+    
+    for (int i = 1; i < q.size(); ++i) {
+        t = kroneckerProduct(baseT, t);
+        //db(i << " t:\n" << t);
+    }
+    
+    VectorXcd v = q.toVector();
+    VectorXcd res = (t * v);
+    q.update(res);
+}
+
+void cnot(const Qubit &x, Qubit &y) {
+    if (x.isOne()) {
+        xGate(y);
+    }
+}
+
 void registerGates(asIScriptEngine *engine) {
     int r;
     r = engine->RegisterGlobalFunction("void hadamard(Qubit &inout)", asFUNCTION(hadamard), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void xGate(Qubit &inout)", asFUNCTION(xGate), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void yGate(Qubit &inout)", asFUNCTION(yGate), asCALL_CDECL); assert(r >= 0);
     r = engine->RegisterGlobalFunction("void zGate(Qubit &inout)", asFUNCTION(zGate), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void sqrtX(Qubit &inout)", asFUNCTION(sqrtX), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void sGate(Qubit &inout)", asFUNCTION(sGate), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void tGate(Qubit &inout)", asFUNCTION(tGate), asCALL_CDECL); assert(r >= 0);
+    r = engine->RegisterGlobalFunction("void cnot(const Qubit &in, Qubit &inout)", asFUNCTION(cnot), asCALL_CDECL); assert(r >= 0);
 }

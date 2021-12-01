@@ -43,8 +43,12 @@ void messageCallback(const asSMessageInfo &msg) {
     db(str.str());
 }
 
-void println(const std::string &str) {
+void printlnStr(const std::string &str) {
     db(str);
+}
+
+void printlnDouble(double n) {
+    db(n);
 }
 
 asIScriptEngine *initAngelScript() {
@@ -57,7 +61,8 @@ asIScriptEngine *initAngelScript() {
     RegisterScriptWeakRef(engine);
     
     r = engine->RegisterObjectType("size_t", sizeof(size_t), asOBJ_VALUE | asOBJ_POD); assert(r >= 0);
-    r = engine->RegisterGlobalFunction("void println(const string &in)", asFUNCTION(println), asCALL_CDECL); assert( r >= 0 );
+    r = engine->RegisterGlobalFunction("void println(const string &in)", asFUNCTION(printlnStr), asCALL_CDECL); assert( r >= 0 );
+    r = engine->RegisterGlobalFunction("void println(double)", asFUNCTION(printlnDouble), asCALL_CDECL); assert( r >= 0 );
 
     Qubit::Register(engine);
     registerGates(engine);

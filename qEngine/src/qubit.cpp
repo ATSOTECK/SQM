@@ -4,6 +4,7 @@
 
 #include "qubit.hpp"
 
+#include <bitset>
 #include <cmath>
 #include <iostream>
 #include <cstdarg>
@@ -27,7 +28,9 @@ void Qubit::Register(asIScriptEngine *engine) {
     r = engine->RegisterObjectMethod("Qubit", "int size()", asMETHODPR(Qubit, size, (void)const, int), asCALL_THISCALL); assert(r >= 0);
     r = engine->RegisterObjectMethod("Qubit", "int count()", asMETHODPR(Qubit, count, (void)const, int), asCALL_THISCALL); assert(r >= 0);
     r = engine->RegisterObjectMethod("Qubit", "int measure()", asMETHODPR(Qubit, measure, (void)const, int), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "double magnitude()", asMETHODPR(Qubit, magnitude, (void)const, double), asCALL_THISCALL); assert(r >= 0);
     r = engine->RegisterObjectMethod("Qubit", "string toString()", asMETHODPR(Qubit, toString, (void)const, std::string), asCALL_THISCALL); assert(r >= 0);
+    r = engine->RegisterObjectMethod("Qubit", "void showProbabilities()", asMETHODPR(Qubit, showProbabilities, (void)const, void), asCALL_THISCALL); assert(r >= 0);
 
     r = engine->RegisterGlobalFunction("void print(const Qubit &in)", asFUNCTION(printQubit), asCALL_CDECL); assert(r >= 0);
 }
@@ -89,14 +92,11 @@ void Qubit::one(int n) {
 }
 
 bool Qubit::isValid() const {
-    Component val = 0;
+    return (std::abs(1.0 - magnitude()) < 1.0e-8);
+}
 
-    for (const auto &c : _components) {
-        val += std::pow(c, 2);
-    }
-
-    //db("val: " << std::abs(val.real() + val.imag()));
-    return (std::abs(1.0 - std::abs(val.real() + val.imag())) < 0.00001);
+bool Qubit::isOne() const {
+    return (_components[1].real() == 1 && isValid());
 }
 
 int Qubit::size() const {
@@ -127,8 +127,8 @@ void Qubit::update(const VectorXcd &v) {
 std::vector<double> Qubit::probabilities() const {
     std::vector<double> probabilities;
     for (const auto &c : _components) {
-        Component s = std::pow(c, 2);
-        probabilities.push_back(std::abs(s.real()));
+        double p = std::pow(c.real(), 2) + std::pow(c.imag(), 2);
+        probabilities.push_back(p);
     }
 
     return probabilities;
@@ -144,6 +144,16 @@ int Qubit::measure() const {
     return distribution(gen);
 }
 
+double Qubit::magnitude() const {
+    double val = 0;
+    
+    for (const auto &c : _components) {
+        val += std::pow(c.real(), 2) + std::pow(c.imag(), 2);
+    }
+    
+    return val;
+}
+
 std::string Qubit::toString() const {
     std::stringstream str;
 
@@ -155,6 +165,15 @@ std::string Qubit::toString() const {
     }
 
     return str.str();
+}
+
+void Qubit::showProbabilities() const {
+    db("probability distribution:");
+    dbnln("[ ");
+    for (const auto &p : probabilities()) {
+        dbnln(p * 100 << "% ");
+    }
+    db("]");
 }
 
 void Qubit::addRef() {
@@ -169,10 +188,20 @@ void Qubit::release() {
 
 std::ostream &operator <<(std::ostream &os, const Qubit &q) {
     os << "qubits: " << q._size << std::endl;
-    os << "components: [real, imag]" << std::endl;
+    os << "components:" << std::endl;
 
+    int idx = 0;
     for (const auto &c : q._components) {
-        os << "[" << c.real() << ", " << c.imag() << "]" << std::endl;
+        if (c.imag() == 0 || c.imag() == -0) {
+            os << "[" << c.real() << ", " << c.imag() << "]";
+        } else {
+            os << "[" << c.real() << ", " << c.imag() << "i]";
+        }
+    
+        std::string bin = std::bitset<64>(idx++).to_string();
+        bin = bin.substr(bin.length() - q.size());
+        
+        os << " |" << bin << ">" << std::endl;
     }
 
     return os;

@@ -34,6 +34,7 @@ public:
     void one(int n);
 
     [[nodiscard]] bool isValid() const;
+    [[nodiscard]] bool isOne() const;
     [[nodiscard]] int size() const;
     [[nodiscard]] int count() const;
 
@@ -42,13 +43,15 @@ public:
 
     [[nodiscard]] std::vector<double> probabilities() const;
     [[nodiscard]] int measure() const;
+    [[nodiscard]] double magnitude() const;
 
     [[nodiscard]] std::string toString() const;
+    void showProbabilities() const;
     
     void addRef();
     void release();
 
-    //void operator=(const Qubit &) = delete;
+    void operator=(const Qubit &) = delete;
 
 private:
     friend std::ostream &operator <<(std::ostream &os, const Qubit &q);
