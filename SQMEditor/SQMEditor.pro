@@ -13,6 +13,8 @@ SOURCES += \
     CentralDocument.cpp \
     CentralWidget.cpp \
     CodeEditor.cpp \
+    ConsoleDock.cpp \
+    FSDock.cpp \
     Highlighter.cpp \
     MiniMap.cpp \
     main.cpp \
@@ -23,6 +25,8 @@ HEADERS += \
     CentralDocument.h \
     CentralWidget.h \
     CodeEditor.h \
+    ConsoleDock.h \
+    FSDock.h \
     Highlighter.h \
     MainWindow.h \
     MiniMap.h \
@@ -38,3 +42,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     res.qrc
+
+DISTFILES += \
+    style.css \
+    wordlist.txt

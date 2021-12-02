@@ -3,10 +3,13 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include <QProcess>
 #include <QToolBar>
 
 #include "CentralDocument.h"
 #include "CentralWidget.h"
+#include "ConsoleDock.h"
+#include "FSDock.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +25,14 @@ public:
 public slots:
     void updateStatusInfoLabel(QString status);
     
+    void openFolder();
+    void openFile(const QString &file);
+    void run();
+    
+    void clearConsole();
+    void updateConsoleErr();
+    void updateConsoleOut();
+    
 private:
     Ui::MainWindow *_ui;
     
@@ -30,6 +41,9 @@ private:
     
     QToolBar *_toolBar;
     QLabel *_statusLabel;
+    FSDock *_fsDock;
+    ConsoleDock *_consoleDock;
+    QProcess *_process;
 };
 
 #endif // MAINWINDOW_H

@@ -1,0 +1,14 @@
+QMainWindow::separator {
+    background-color: #000000;
+}
+
+QDockWidget::title { 
+    text-align: left; 
+    background: #323232; 
+    padding-left: 8px; 
+}
+
+QPlainTextEdit { 
+    background-color: #32302F; 
+    color: #EFE2BA; 
+}

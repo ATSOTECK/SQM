@@ -17,9 +17,30 @@
 #include <QDebug>
 #include <QMessageBox>
 
+namespace {
+QAbstractItemModel *modelFromFile(const QString &fileName, QCompleter *completer) {
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly)) {
+        return new QStringListModel(completer);
+    }
+    
+    QStringList words;
+
+    while (!file.atEnd()) {
+        QByteArray line = file.readLine();
+        if (!line.isEmpty()) {
+            words << line.trimmed();
+        }
+    }
+    
+    words.sort();
+    return new QStringListModel(words, completer);
+}
+} //namespace
+
 CodeEditor::CodeEditor(QString name, QWidget *parent):
     QPlainTextEdit(parent),
-    _completer(0),
+    _completer(new QCompleter),
     _name(name),
     _highlighter(new Highlighter(document())),
     _set(false),
@@ -38,7 +59,13 @@ CodeEditor::CodeEditor(QString name, QWidget *parent):
     
     _timer = new QTimer(this);
     
-    setStyleSheet("QPlainTextEdit { background-color: #32302F; color: #EFE2BA; }");
+    _completer->setModel(modelFromFile(":/wordlist.txt", _completer));
+    _completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+    _completer->setCaseSensitivity(Qt::CaseInsensitive);
+    _completer->setWrapAround(false);
+    _completer->popup()->setStyleSheet("color: #848484; background-color: #2E2E2E; selection-background-color: #424242;");
+    setCompleter(_completer);
+    
     document()->setDefaultFont(QFont("Monaco"));
     
     setUpMiniMap();
@@ -1321,8 +1348,8 @@ void CodeEditor::findText() {
 
 bool CodeEditor::saveToFile(QString &path) {
     QString fileName = path + '/' + _name;
-    if (!fileName.contains(".zs")) {
-        fileName += ".zs";
+    if (!fileName.contains(".sqm")) {
+        fileName += ".sqm";
     }
     
     //qDebug() << "script filename" << fileName;

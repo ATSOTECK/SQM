@@ -15,16 +15,16 @@ Titlebar::Titlebar(const QString &title, QWidget *parent):
     _layout->setContentsMargins(0, 0, 0, 0);
     _layout->addWidget(_toolbar);
     
-    QAction *closeAction = new QAction(QIcon("/img/close3.png"), QString(), this);
+    QAction *closeAction = new QAction(QIcon(":/img/close3.png"), QString("close"), this);
     connect(closeAction, SIGNAL(triggered()), this, SLOT(closeClicked()));
     _toolbar->addAction(closeAction);
     _toolbar->addWidget(_box);
     
-    _box->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    //_box->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     connect(_box, SIGNAL(activated(QString)), this, SIGNAL(documentSelected(QString)));
     
     _toolbar->setIconSize((QSize(12, 12)));
-    _toolbar->setStyleSheet(QString("background: #101010;"));
+    //_toolbar->setStyleSheet(QString("QToolBar { background: #FFFFFF; }")); //doesn't work for some reason
 }
 
 void Titlebar::setName(const QString &name) {
@@ -53,7 +53,7 @@ void Titlebar::closeClicked() {
 
 void Titlebar::paintEvent(QPaintEvent *) {
     QPainter p(this);
-    p.fillRect(rect(), QColor(0x10, 0x10, 0x10));
+    p.fillRect(rect(), QColor("#323232"));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ CentralDocument::CentralDocument(QWidget *parent) :
     _layout->setSpacing(0);
     
     connect(_stack, SIGNAL(currentChanged(int)), this, SLOT(indexChanged(int)));
-    connect(_titlebar, SIGNAL(closeCurrentDockument()), this, SLOT(closeCurrentDocumentClicked()));
+    connect(_titlebar, SIGNAL(closeCurrent()), this, SLOT(closeCutrrentClicked()));
     connect(_titlebar, SIGNAL(documentSelected(QString)), this, SIGNAL(documentSelected(QString)));
 }
 
@@ -113,6 +113,8 @@ void CentralDocument::addWidget(QWidget *widget, const QString &name) {
     _stack->addWidget(widget);
     _titlebar->setName(name);
     _names.append(name);
+    
+    _stack->setCurrentWidget(widget);
 }
 
 void CentralDocument::currentIndexSet(int index) {
