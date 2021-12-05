@@ -3,5 +3,7 @@
         <file>img/close.png</file>
         <file>img/close2.png</file>
         <file>img/close3.png</file>
+        <file>style.css</file>
+        <file>wordlist.txt</file>
     </qresource>
 </RCC>
