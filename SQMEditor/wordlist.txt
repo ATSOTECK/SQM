@@ -2,10 +2,15 @@ hadamard
 xGate
 yGate
 zGate
+rxGate
+ryGate
+rzGate
 sqrtX
 sGate
 tGate
 cnot
+swap
+sqrtSwap
 
 Qubit
 Zero
@@ -75,3 +80,4 @@ set
 shared
 super
 switch
+true
