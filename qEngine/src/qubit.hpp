@@ -40,6 +40,9 @@ public:
 
     [[nodiscard]] VectorXcd toVector() const;
     void update(const VectorXcd &v);
+    
+    [[nodiscard]] Component component(int index) const;
+    void setComponent(int index, Component component);
 
     [[nodiscard]] std::vector<double> probabilities() const;
     [[nodiscard]] int measure() const;
