@@ -124,6 +124,22 @@ void Qubit::update(const VectorXcd &v) {
     }
 }
 
+Component Qubit::component(int index) const {
+    if (index >= _components.size() || index < 0) {
+        return Component(0, 0);
+    }
+    
+    return _components[index];
+}
+
+void Qubit::setComponent(int index, Component component) {
+    if (index >= _components.size() || index < 0) {
+        return;
+    }
+    
+    _components[index] = component;
+}
+
 std::vector<double> Qubit::probabilities() const {
     std::vector<double> probabilities;
     for (const auto &c : _components) {

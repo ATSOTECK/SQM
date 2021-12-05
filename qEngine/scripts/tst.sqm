@@ -32,8 +32,25 @@ void testCNOT() {
     y.showProbabilities();
 }
 
+void testSqrtSwap() {
+    Qubit x(One, 1);
+    Qubit y(Zero, 1);
+    hadamard(x);
+    hadamard(y);
+
+    sqrtSwap(x, y);
+
+    print(x);
+    print(y);
+
+    println("x is valid?: " + x.isValid());
+    println("y is valid?: " + y.isValid());
+}
+
 void run() {
-    testCNOT();
+    testSqrtSwap();
+
+    //testCNOT();
 
     return;
     Qubit q(Zero, 2);
