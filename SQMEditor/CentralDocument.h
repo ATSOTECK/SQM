@@ -17,6 +17,7 @@ public:
     Titlebar(const QString &title, QWidget *parent = 0);
     
     void setName(const QString &name);
+    void switchTo(const QString &name);
     
 public slots:
     void closeClicked();
@@ -50,14 +51,17 @@ public:
     
     void setName(const QString &name);
     
+    keep bool alreadyOpen(const QString &name) const;
+    void switchTo(const QString &name);
+    
 public slots:
     void indexChanged(int index);
     void closeCutrrentClicked();
+    void documentSelected(QString name);
     
 signals:
     void currentChanged(int);
     void closeCurrent(int);
-    void documentSelected(QString);
     
 private:
     Titlebar *_titlebar;

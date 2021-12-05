@@ -5,5 +5,8 @@
         <file>img/close3.png</file>
         <file>style.css</file>
         <file>wordlist.txt</file>
+        <file>img/run.png</file>
+        <file>img/folder.png</file>
+        <file>img/save.png</file>
     </qresource>
 </RCC>

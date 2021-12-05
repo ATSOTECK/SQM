@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QAction>
 #include <QLabel>
 #include <QMainWindow>
 #include <QProcess>
@@ -32,6 +33,11 @@ public slots:
     void clearConsole();
     void updateConsoleErr();
     void updateConsoleOut();
+    void hideConsole();
+    void showConsole();
+    
+    void hideExplorer();
+    void showExplorer();
     
 private:
     Ui::MainWindow *_ui;
@@ -44,6 +50,10 @@ private:
     FSDock *_fsDock;
     ConsoleDock *_consoleDock;
     QProcess *_process;
+    
+    QAction *_actionRun;
+    QAction *_actionOpen;
+    QAction *_actionSave;
 };
 
 #endif // MAINWINDOW_H

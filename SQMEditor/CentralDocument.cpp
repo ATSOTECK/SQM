@@ -1,5 +1,7 @@
 #include "CentralDocument.h"
 
+#include "CodeEditor.h"
+
 #include <QAction>
 #include <QFile>
 #include <QPainter>
@@ -20,7 +22,7 @@ Titlebar::Titlebar(const QString &title, QWidget *parent):
     _toolbar->addAction(closeAction);
     _toolbar->addWidget(_box);
     
-    //_box->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    _box->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     connect(_box, SIGNAL(activated(QString)), this, SIGNAL(documentSelected(QString)));
     
     _toolbar->setIconSize((QSize(12, 12)));
@@ -42,6 +44,16 @@ void Titlebar::setName(const QString &name) {
     for (int j = 0; j < _box->count(); j++) {
         if (_box->itemText(j) == name) {
             _box->setCurrentIndex(j);
+            return;
+        }
+    }
+}
+
+void Titlebar::switchTo(const QString &name) {
+    for (int i = 0; i < _box->count(); i++) {
+        if (_box->itemText(i) == name) {
+            _box->setCurrentIndex(i);
+            
             return;
         }
     }
@@ -71,7 +83,7 @@ CentralDocument::CentralDocument(QWidget *parent) :
     
     connect(_stack, SIGNAL(currentChanged(int)), this, SLOT(indexChanged(int)));
     connect(_titlebar, SIGNAL(closeCurrent()), this, SLOT(closeCutrrentClicked()));
-    connect(_titlebar, SIGNAL(documentSelected(QString)), this, SIGNAL(documentSelected(QString)));
+    connect(_titlebar, SIGNAL(documentSelected(QString)), this, SLOT(documentSelected(QString)));
 }
 
 void CentralDocument::indexChanged(int index) {
@@ -92,6 +104,18 @@ void CentralDocument::closeCutrrentClicked() {
     }
     
     emit closeCurrent(index);
+}
+
+void CentralDocument::documentSelected(QString name) {
+    CodeEditor *e = nullptr;
+    
+    for (int i = 0; i < _stack->count(); ++i) {
+        e = dynamic_cast<CodeEditor *>(_stack->widget(i));
+        
+        if (e != nullptr && e->getName() == name) {
+            _stack->setCurrentIndex(i);
+        }
+    }
 }
 
 void CentralDocument::addWidget(QWidget *widget, const QString &name) {
@@ -135,4 +159,23 @@ QString CentralDocument::currentWidgetGetName() const {
 
 void CentralDocument::setName(const QString &name) {
     _titlebar->setName(name);
+}
+
+bool CentralDocument::alreadyOpen(const QString &name) const {
+    CodeEditor *e = nullptr;
+    
+    for (int i = 0; i < _stack->count(); ++i) {
+        e = dynamic_cast<CodeEditor *>(_stack->widget(i));
+        
+        if (e != nullptr && e->getName() == name) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+void CentralDocument::switchTo(const QString &name) {
+    documentSelected(name);
+    _titlebar->switchTo(name);
 }

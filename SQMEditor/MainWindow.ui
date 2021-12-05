@@ -49,6 +49,9 @@
     <addaction name="actionShow_Console"/>
     <addaction name="actionHide_Console"/>
     <addaction name="actionClear_Console"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_Explorer"/>
+    <addaction name="actionHide_Explorer"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -101,6 +104,16 @@
   <action name="actionClear_Console">
    <property name="text">
     <string>Clear Console</string>
+   </property>
+  </action>
+  <action name="actionShow_Explorer">
+   <property name="text">
+    <string>Show Explorer</string>
+   </property>
+  </action>
+  <action name="actionHide_Explorer">
+   <property name="text">
+    <string>Hide Explorer</string>
    </property>
   </action>
  </widget>

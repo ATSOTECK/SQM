@@ -3,7 +3,9 @@
 
 #include "CodeEditor.h"
 
+#include <QDateTime>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QTextStream>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -14,7 +16,10 @@ MainWindow::MainWindow(QWidget *parent)
     _toolBar(new QToolBar(this)),
     _statusLabel(new QLabel),
     _fsDock(new FSDock(this)),
-    _consoleDock(new ConsoleDock(this))
+    _consoleDock(new ConsoleDock(this)),
+    _actionRun(new QAction(QIcon(":/img/run.png"), "Run", this)),
+    _actionOpen(new QAction(QIcon(":/img/folder.png"), "Open", this)),
+    _actionSave(new QAction(QIcon(":/img/save.png"), "Save", this))
 {
     _ui->setupUi(this);
     
@@ -30,6 +35,11 @@ MainWindow::MainWindow(QWidget *parent)
     
     setUnifiedTitleAndToolBarOnMac(true);
     addToolBar(_toolBar);
+    _toolBar->setMovable(false);
+    _toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _toolBar->addAction(_actionOpen);
+    _toolBar->addAction(_actionSave);
+    _toolBar->addAction(_actionRun);
     
     setCentralWidget(_centralWidget);
     _centralWidget->addDocument(_centralDocument);
@@ -49,8 +59,18 @@ MainWindow::MainWindow(QWidget *parent)
     addDockWidget(Qt::BottomDockWidgetArea, _consoleDock);
     
     connect(_ui->actionOpen_Folder, SIGNAL(triggered()), this, SLOT(openFolder()));
+    connect(_actionOpen, SIGNAL(triggered()), this, SLOT(openFolder()));
+    connect(_ui->actionRun, SIGNAL(triggered()), this, SLOT(run()));
+    connect(_actionRun, SIGNAL(triggered()), this, SLOT(run()));
+    connect(_ui->actionClear_Console, SIGNAL(triggered()), this, SLOT(clearConsole()));
+    connect(_ui->actionHide_Console, SIGNAL(triggered()), this, SLOT(hideConsole()));
+    connect(_ui->actionShow_Console, SIGNAL(triggered()), this, SLOT(showConsole()));
+    connect(_ui->actionHide_Explorer, SIGNAL(triggered()), this, SLOT(hideExplorer()));
+    connect(_ui->actionShow_Explorer, SIGNAL(triggered()), this, SLOT(showExplorer()));
     
     connect(_fsDock, SIGNAL(selected(const QString &)), this, SLOT(openFile(const QString &)));
+    
+    _consoleDock->hide();
 }
 
 MainWindow::~MainWindow() {
@@ -67,7 +87,19 @@ void MainWindow::openFolder() {
 }
 
 void MainWindow::openFile(const QString &file) {
+    QFileInfo fi(file);
+    if (!fi.exists() || !fi.isFile()) {
+        return;
+    }
+    
     QString name = file.right(file.length() - file.lastIndexOf('/') - 1);
+    
+    if (_centralDocument->alreadyOpen(name)) {
+        _centralDocument->switchTo(name);
+        
+        return;
+    }
+    
     CodeEditor *e = new CodeEditor(name, this);
     e->openFile(file);
     
@@ -76,6 +108,9 @@ void MainWindow::openFile(const QString &file) {
 }
 
 void MainWindow::run() {
+    _consoleDock->show();
+    _consoleDock->addText("New run on " + QDateTime::currentDateTime().toString("dd/MM") + " at " + QDateTime::currentDateTime().toString("h:mm:ss ap"));
+    
     _process = new QProcess(this);
     connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(updateConsoleErr()));
     connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(updateConsoleOut()));
@@ -95,4 +130,20 @@ void MainWindow::updateConsoleOut() {
     QString text(_process->readAllStandardOutput());
     
     _consoleDock->addText(text);
+}
+
+void MainWindow::hideConsole() {
+    _consoleDock->hide();
+}
+
+void MainWindow::showConsole() {
+    _consoleDock->show();
+}
+
+void MainWindow::hideExplorer() {
+    _fsDock->hide();
+}
+
+void MainWindow::showExplorer() {
+    _fsDock->show();
 }
