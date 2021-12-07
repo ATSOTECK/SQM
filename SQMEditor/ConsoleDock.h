@@ -12,6 +12,10 @@ public:
     void clear();
     void setText(const QString &txt);
     void addText(const QString &txt);
+    void scrollToBottom();
+    
+    QString line(int index) const;
+    int lineCount() const;
     
 private:
     QPlainTextEdit *_text;

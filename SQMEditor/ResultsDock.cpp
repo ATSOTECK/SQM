@@ -11,17 +11,17 @@ ResultsDock::ResultsDock(QWidget *parent) :
     _measureChart(new QChart()),
     _probsView(new QChartView(this)),
     _measureView(new QChartView(this)),
-    _probSet(new QBarSet("State")),
+    _probSet(new QBarSet("Internal State")),
     _measureSet(new QBarSet("Result"))
 {
     setWindowTitle("RESULTS");
+    
+    setStyleSheet("background: #262626;");
     
     _probSet->setColor(QColor("#5BAFF9"));
     _probSet->setBorderColor(Qt::transparent);
     _measureSet->setColor(QColor("#5BAFF9"));
     _measureSet->setBorderColor(Qt::transparent);
-    
-    *_probSet << 25 << 25 << 25 << 25 << 0 << 0 << 0 << 0;
     
     _probsSeries->setName("Probabilities");
     _probsSeries->append(_probSet);
@@ -49,10 +49,9 @@ ResultsDock::ResultsDock(QWidget *parent) :
     
     _probsView->setRenderHint(QPainter::Antialiasing, true);
     _probsView->setChart(_probsChart);
+    _probsView->setFrameStyle(QFrame::NoFrame);
     
     /*-------------------------------------------------------------------------------------*/
-    
-    *_measureSet << 0 << 100 << 0 << 0 << 0 << 0 << 0 << 0;
     
     _measureSeries->setName("Measurement");
     _measureSeries->append(_measureSet);
@@ -78,6 +77,7 @@ ResultsDock::ResultsDock(QWidget *parent) :
     
     _measureView->setRenderHint(QPainter::Antialiasing, true);
     _measureView->setChart(_measureChart);
+    _measureView->setFrameStyle(QFrame::NoFrame);
     
     
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -86,6 +86,7 @@ ResultsDock::ResultsDock(QWidget *parent) :
     layout->addWidget(_measureView);
     
     QGroupBox *box = new QGroupBox(this);
+    box->setStyleSheet("background: #262626;");
     box->setContentsMargins(0, 0, 0, 0);
     box->setLayout(layout);
     
@@ -104,9 +105,13 @@ void ResultsDock::clear() {
     _measureSet->remove(0, 8);
 }
 
-void ResultsDock::addData(const QVector<int> &probs, int measure) {
+void ResultsDock::addData(const QVector<double> &probs, int measure) {
     for (int prob : probs) {
         _probSet->append(prob);
+    }
+    
+    if (measure < 0) {
+        return;
     }
     
     for (int i = 0; i < 8; ++i) {

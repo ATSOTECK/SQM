@@ -15,6 +15,7 @@ SOURCES += \
     CodeEditor.cpp \
     ConsoleDock.cpp \
     FSDock.cpp \
+    HelpDialog.cpp \
     Highlighter.cpp \
     MiniMap.cpp \
     ResultsDock.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     CodeEditor.h \
     ConsoleDock.h \
     FSDock.h \
+    HelpDialog.h \
     Highlighter.h \
     MainWindow.h \
     MiniMap.h \
@@ -35,6 +37,7 @@ HEADERS += \
     common.h
 
 FORMS += \
+    HelpDialog.ui \
     MainWindow.ui
 
 # Default rules for deployment.

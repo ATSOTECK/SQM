@@ -174,6 +174,18 @@ QString CodeEditor::getFilePath() const {
     return _filePath;
 }
 
+QString CodeEditor::line(int index) const {
+    if (index >= lineCount()) {
+        return QString();
+    }
+    
+    return document()->findBlockByLineNumber(index).text();
+}
+
+int CodeEditor::lineCount() const {
+    return document()->blockCount();
+}
+
 bool CodeEditor::isModified() const {
     return true;
 }

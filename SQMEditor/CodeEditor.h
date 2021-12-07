@@ -50,6 +50,9 @@ public:
     QString getName() const;
     QString getFilePath() const;
     
+    QString line(int index) const;
+    int lineCount() const;
+    
     bool isModified() const;
 
     bool saveToFile(QString &path);

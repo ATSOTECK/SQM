@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HelpDialog</class>
+ <widget class="QDialog" name="HelpDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Help</string>
+  </property>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>1011</width>
+     <height>781</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QPlainTextEdit" name="plainTextEdit">
+      <property name="plainText">
+       <string>The following are a list of valid gates:
+hadamard(Qubit &amp;inout qubit)
+xGate(Qubit &amp;inout qubit)
+yGate(Qubit &amp;inout qubit)
+zGate(Qubit &amp;inout qubit)
+rxGate(Qubit &amp;inout qubit, double theta) In degrees.
+ryGate(Qubit &amp;inout qubit, double theta) In degrees.
+rzGate(Qubit &amp;inout qubit, double theta) In degrees.
+sqrtX(Qubit &amp;inout qubit)
+sGate(Qubit &amp;inout qubit)
+tGate(Qubit &amp;inout qubit)
+cnot(Qubit &amp;in x, Qubit &amp;inout y)
+swap(Qubit &amp;inout x, Qubit &amp;inout y)
+sqrtSwap(Qubit &amp;inout x, Qubit &amp;inout y)
+
+Qubit(Kind kind, int size) : The Qubit class, Kind is either Zero or One
+The following are functions in the Qubit class:
+void zero() Resets the Qubit to Zero.
+void one() Resets the Qubit to One.
+bool isValid() Returns true if the magnitude is 1, otherwise returns false.
+int size() Returns the size of the Qubit.
+int count() Returns the number of components in the Qubit. Can be thought of as the dimension.
+int measure() Measures the Qubit based on the internel properties.
+double magnitude() Returns the magnitude of the Qubit.  Will be 1 if valid.
+string toString() Returns a string version of the Qubit.
+void showProbabilities() Print the internal probabilities to the console.
+
+println(const string &amp;in str) Prints str to the console.
+println(double d) Prints d to the console.
+print(const Qubit &amp;in qubit) Prints qubit to the console.
+
+To have the probabilities graph display correctly qubit.showProbabilities() must be called and the first one it finds will be used.
+
+To have the measurement grpah display correctly println(&quot;measure: \n&quot; + qubit.measure()) must be called and the first one it finds will be used.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

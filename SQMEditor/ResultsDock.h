@@ -17,7 +17,7 @@ public:
     ~ResultsDock();
     
     void clear();
-    void addData(const QVector<int> &probs, int measure);
+    void addData(const QVector<double> &probs, int measure);
     
 private:
     QBarSeries *_probsSeries;

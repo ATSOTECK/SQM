@@ -48,6 +48,8 @@ public slots:
     
     void hideConsoleResults();
     
+    void showHelp();
+    
 private:
     Ui::MainWindow *_ui;
     

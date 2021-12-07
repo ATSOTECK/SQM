@@ -2,11 +2,16 @@
 #include "ui_MainWindow.h"
 
 #include "CodeEditor.h"
+#include "HelpDialog.h"
 
+#include <cstdlib>
 #include <QDateTime>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QTextStream>
+
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -77,6 +82,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_ui->actionShow_Results, SIGNAL(triggered()), this, SLOT(showResults()));
     connect(_ui->actionHide_Console_Results, SIGNAL(triggered()), this, SLOT(hideConsoleResults()));
     connect(_ui->actionSave, SIGNAL(triggered()), this, SLOT(save()));
+    connect(_actionSave, SIGNAL(triggered()), this, SLOT(save()));
+    connect(_ui->actionShow_Help, SIGNAL(triggered()), this, SLOT(showHelp()));
     
     connect(_fsDock, SIGNAL(selected(const QString &)), this, SLOT(openFile(const QString &)));
 }
@@ -91,7 +98,9 @@ void MainWindow::updateStatusInfoLabel(QString status) {
 
 void MainWindow::openFolder() {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open Folder"), QDir::homePath() + "/Documents");
-    _fsDock->setDir(dir);
+    if (!dir.isEmpty()) {
+        _fsDock->setDir(dir);
+    }
 }
 
 void MainWindow::openFile(const QString &file) {
@@ -129,6 +138,7 @@ void MainWindow::run() {
     _resultsDock->show();
     _resultsDock->clear();
     _consoleDock->show();
+    _consoleDock->clear();
     _consoleDock->addText("New run on " + QDateTime::currentDateTime().toString("dd/MM") + " at " + 
                           QDateTime::currentDateTime().toString("h:mm:ss ap"));
     _consoleDock->addText("Running file " + filePath + "\n");
@@ -140,14 +150,47 @@ void MainWindow::run() {
     _process = new QProcess(this);
     connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(updateConsoleErr()));
     connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(updateConsoleOut()));
-    connect(_process, SIGNAL(finished()), this, SLOT(done()));
+    connect(_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(done()));
     
     _process->start(program, args);
 }
 
 void MainWindow::done() {
-    QVector<int> vec = {0, 25, 25, 25, 25, 0, 0, 0};
-    _resultsDock->addData(vec, 3);
+    QString line;
+    int lines = _consoleDock->lineCount();
+    QVector<double> vec;
+    int measure = -1;
+    
+    for (int i = 0; i < lines; ++i) {
+        line = _consoleDock->line(i);
+        if (line.contains("probability distribution:")) {
+            line = _consoleDock->line(i + 1);
+            break;
+        }
+    }
+    
+    const QRegularExpression rx("[^\\d+\\.?\\d*]");
+    QStringList list = line.split(rx, Qt::SkipEmptyParts);
+    for (int j = 0; j < 8; ++j) {
+        if (j < list.length()) {
+            vec.append(list[j].toDouble());
+        } else {
+            vec.append(0.0);
+        }
+    }
+    
+    for (int i = 0; i < lines; ++i) {
+        line = _consoleDock->line(i);
+        if (line.contains("measure:")) {
+            line = _consoleDock->line(i + 1);
+            measure = line.toInt();
+            break;
+        }
+    }
+    
+    _resultsDock->addData(vec, measure);
+    
+    _consoleDock->scrollToBottom();
 }
 
 void MainWindow::save() {
@@ -205,4 +248,9 @@ void MainWindow::showResults() {
 void MainWindow::hideConsoleResults() {
     _consoleDock->hide();
     _resultsDock->hide();
+}
+
+void MainWindow::showHelp() {
+    HelpDialog hlp(this);
+    hlp.exec();
 }
