@@ -55,6 +55,8 @@
     <addaction name="separator"/>
     <addaction name="actionShow_Results"/>
     <addaction name="actionHide_Results"/>
+    <addaction name="separator"/>
+    <addaction name="actionHide_Console_Results"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -127,6 +129,11 @@
   <action name="actionHide_Results">
    <property name="text">
     <string>Hide Results</string>
+   </property>
+  </action>
+  <action name="actionHide_Console_Results">
+   <property name="text">
+    <string>Hide Console/Results</string>
    </property>
   </action>
  </widget>

@@ -75,7 +75,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_ui->actionShow_Explorer, SIGNAL(triggered()), this, SLOT(showExplorer()));
     connect(_ui->actionHide_Results, SIGNAL(triggered()), this, SLOT(hideResults()));
     connect(_ui->actionShow_Results, SIGNAL(triggered()), this, SLOT(showResults()));
-    
+    connect(_ui->actionHide_Console_Results, SIGNAL(triggered()), this, SLOT(hideConsoleResults()));
+    connect(_ui->actionSave, SIGNAL(triggered()), this, SLOT(save()));
     
     connect(_fsDock, SIGNAL(selected(const QString &)), this, SLOT(openFile(const QString &)));
 }
@@ -115,13 +116,37 @@ void MainWindow::openFile(const QString &file) {
 }
 
 void MainWindow::run() {
+    CodeEditor *e = dynamic_cast<CodeEditor *>(_centralDocument->currentWidgetGet());
+    if (e == nullptr) {
+        return;
+    }
+    
+    QString filePath = e->getFilePath();
+    if (!filePath.endsWith(".sqm")) {
+        return;
+    }
+    
     _resultsDock->show();
     _consoleDock->show();
-    _consoleDock->addText("New run on " + QDateTime::currentDateTime().toString("dd/MM") + " at " + QDateTime::currentDateTime().toString("h:mm:ss ap"));
+    _consoleDock->addText("New run on " + QDateTime::currentDateTime().toString("dd/MM") + " at " + 
+                          QDateTime::currentDateTime().toString("h:mm:ss ap"));
+    _consoleDock->addText("Running file " + filePath + "\n");
     
     _process = new QProcess(this);
     connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(updateConsoleErr()));
     connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(updateConsoleOut()));
+}
+
+void MainWindow::save() {
+    CodeEditor *e = dynamic_cast<CodeEditor *>(_centralDocument->currentWidgetGet());
+    if (e == nullptr) {
+        return;
+    }
+    
+    if (!e->saveFile()) {
+        _consoleDock->show();
+        _consoleDock->addText("Failed to save '" + e->getFilePath() + "'");
+    }
 }
 
 void MainWindow::clearConsole() {
@@ -162,4 +187,9 @@ void MainWindow::hideResults() {
 
 void MainWindow::showResults() {
     _resultsDock->show();
+}
+
+void MainWindow::hideConsoleResults() {
+    _consoleDock->hide();
+    _resultsDock->hide();
 }

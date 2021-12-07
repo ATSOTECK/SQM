@@ -48,10 +48,12 @@ public:
     QRectF editorBlockBoundingGeometry(const QTextBlock &block) const;
 
     QString getName() const;
+    QString getFilePath() const;
     
     bool isModified() const;
 
     bool saveToFile(QString &path);
+    bool saveFile();
     bool openFile(const QString &path);
     
     void lineNumberAreaMousePressEvent(QMouseEvent *e);
@@ -147,6 +149,7 @@ private:
     QCompleter *_completer;
 
     QString _name;
+    QString _filePath;
 
     QPixmap _rightArrowIcon;
     QPixmap _downArrowIcon;

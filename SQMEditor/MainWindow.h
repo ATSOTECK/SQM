@@ -31,6 +31,8 @@ public slots:
     void openFile(const QString &file);
     void run();
     
+    void save();
+    
     void clearConsole();
     void updateConsoleErr();
     void updateConsoleOut();
@@ -42,6 +44,8 @@ public slots:
     
     void hideResults();
     void showResults();
+    
+    void hideConsoleResults();
     
 private:
     Ui::MainWindow *_ui;

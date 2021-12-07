@@ -170,6 +170,10 @@ QString CodeEditor::getName() const {
     return _name;
 }
 
+QString CodeEditor::getFilePath() const {
+    return _filePath;
+}
+
 bool CodeEditor::isModified() const {
     return true;
 }
@@ -1371,6 +1375,24 @@ bool CodeEditor::saveToFile(QString &path) {
     return false;
 }
 
+bool CodeEditor::saveFile() {
+    QFile file(_filePath);
+    if (file.open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream out(&file);
+        
+        out << toPlainText();
+        
+        file.flush();
+        file.close();
+        
+        _undoStack->setClean();
+        
+        return true;
+    }
+    
+    return false;
+}
+
 bool CodeEditor::openFile(const QString &path) {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -1388,6 +1410,8 @@ bool CodeEditor::openFile(const QString &path) {
     }
     
     _undoStack->setClean();
+    
+    _filePath = path;
     
     return true;
 }
