@@ -1,0 +1,10 @@
+void run() {
+    Qubit q(Zero, 3);
+    //xGate(q);
+    hadamard(q);
+    
+    print(q);
+    
+    q.showProbabilities();
+    println("measure: \n" + q.measure());
+}

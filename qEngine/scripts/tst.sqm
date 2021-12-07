@@ -48,9 +48,9 @@ void testSqrtSwap() {
 }
 
 void run() {
-    testSqrtSwap();
+    //testSqrtSwap();
 
-    //testCNOT();
+    testCNOT();
 
     return;
     Qubit q(Zero, 2);
@@ -62,7 +62,7 @@ void run() {
 
     println("valid? " + (q.isValid() ? "yes" : "no"));
 
-    println("measure: " + q.measure());
+    println("measure: \n" + q.measure());
     q.showProbabilities();
 
     println("---------------");
