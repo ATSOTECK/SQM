@@ -4,6 +4,7 @@
 #include <scriptstdstring/scriptstdstring.h>
 #include <scriptbuilder/scriptbuilder.h>
 #include <scripthandle/scripthandle.h>
+#include <string>
 #include <weakref/weakref.h>
 
 #include "src/common.hpp"
@@ -70,7 +71,7 @@ asIScriptEngine *initAngelScript() {
     return engine;
 }
 
-void run(asIScriptEngine *engine) {
+void run(asIScriptEngine *engine, char *script) {
     CScriptBuilder builder;
     int r = builder.StartNewModule(engine, "SQM");
     if (r < 0) {
@@ -78,7 +79,7 @@ void run(asIScriptEngine *engine) {
         exit(0);
     }
     
-    r = builder.AddSectionFromFile("../scripts/tst.sqm");
+    r = builder.AddSectionFromFile(script);
     if (r < 0) {
         db("Could not load file.");
         exit(0);
@@ -109,9 +110,16 @@ void run(asIScriptEngine *engine) {
     ctx->Release();
 }
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        db("Usage:");
+        db("qEngine pathToScript");
+        
+        return 0;
+    }
+    
     asIScriptEngine *engine = initAngelScript();
-    run(engine);
+    run(engine, argv[1]);
     
     engine->ShutDownAndRelease();
 
