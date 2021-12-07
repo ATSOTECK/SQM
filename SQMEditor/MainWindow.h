@@ -11,6 +11,7 @@
 #include "CentralWidget.h"
 #include "ConsoleDock.h"
 #include "FSDock.h"
+#include "ResultsDock.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -39,6 +40,9 @@ public slots:
     void hideExplorer();
     void showExplorer();
     
+    void hideResults();
+    void showResults();
+    
 private:
     Ui::MainWindow *_ui;
     
@@ -49,6 +53,7 @@ private:
     QLabel *_statusLabel;
     FSDock *_fsDock;
     ConsoleDock *_consoleDock;
+    ResultsDock *_resultsDock;
     QProcess *_process;
     
     QAction *_actionRun;

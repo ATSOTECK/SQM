@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,6 +17,7 @@ SOURCES += \
     FSDock.cpp \
     Highlighter.cpp \
     MiniMap.cpp \
+    ResultsDock.cpp \
     main.cpp \
     MainWindow.cpp
 
@@ -30,6 +31,7 @@ HEADERS += \
     Highlighter.h \
     MainWindow.h \
     MiniMap.h \
+    ResultsDock.h \
     common.h
 
 FORMS += \

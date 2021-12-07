@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     _statusLabel(new QLabel),
     _fsDock(new FSDock(this)),
     _consoleDock(new ConsoleDock(this)),
+    _resultsDock(new ResultsDock(this)),
     _actionRun(new QAction(QIcon(":/img/run.png"), "Run", this)),
     _actionOpen(new QAction(QIcon(":/img/folder.png"), "Open", this)),
     _actionSave(new QAction(QIcon(":/img/save.png"), "Save", this))
@@ -55,8 +56,13 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar()->setStyleSheet("background: #252526;");
     
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
     addDockWidget(Qt::LeftDockWidgetArea, _fsDock);
     addDockWidget(Qt::BottomDockWidgetArea, _consoleDock);
+    addDockWidget(Qt::RightDockWidgetArea, _resultsDock);
+    
+    _consoleDock->hide();
+    _resultsDock->hide();
     
     connect(_ui->actionOpen_Folder, SIGNAL(triggered()), this, SLOT(openFolder()));
     connect(_actionOpen, SIGNAL(triggered()), this, SLOT(openFolder()));
@@ -67,10 +73,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_ui->actionShow_Console, SIGNAL(triggered()), this, SLOT(showConsole()));
     connect(_ui->actionHide_Explorer, SIGNAL(triggered()), this, SLOT(hideExplorer()));
     connect(_ui->actionShow_Explorer, SIGNAL(triggered()), this, SLOT(showExplorer()));
+    connect(_ui->actionHide_Results, SIGNAL(triggered()), this, SLOT(hideResults()));
+    connect(_ui->actionShow_Results, SIGNAL(triggered()), this, SLOT(showResults()));
+    
     
     connect(_fsDock, SIGNAL(selected(const QString &)), this, SLOT(openFile(const QString &)));
-    
-    _consoleDock->hide();
 }
 
 MainWindow::~MainWindow() {
@@ -108,6 +115,7 @@ void MainWindow::openFile(const QString &file) {
 }
 
 void MainWindow::run() {
+    _resultsDock->show();
     _consoleDock->show();
     _consoleDock->addText("New run on " + QDateTime::currentDateTime().toString("dd/MM") + " at " + QDateTime::currentDateTime().toString("h:mm:ss ap"));
     
@@ -146,4 +154,12 @@ void MainWindow::hideExplorer() {
 
 void MainWindow::showExplorer() {
     _fsDock->show();
+}
+
+void MainWindow::hideResults() {
+    _resultsDock->hide();
+}
+
+void MainWindow::showResults() {
+    _resultsDock->show();
 }
