@@ -127,14 +127,27 @@ void MainWindow::run() {
     }
     
     _resultsDock->show();
+    _resultsDock->clear();
     _consoleDock->show();
     _consoleDock->addText("New run on " + QDateTime::currentDateTime().toString("dd/MM") + " at " + 
                           QDateTime::currentDateTime().toString("h:mm:ss ap"));
     _consoleDock->addText("Running file " + filePath + "\n");
     
+    QStringList args;
+    args << filePath;
+    QString program = "qEngine";
+    
     _process = new QProcess(this);
     connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(updateConsoleErr()));
     connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(updateConsoleOut()));
+    connect(_process, SIGNAL(finished()), this, SLOT(done()));
+    
+    _process->start(program, args);
+}
+
+void MainWindow::done() {
+    QVector<int> vec = {0, 25, 25, 25, 25, 0, 0, 0};
+    _resultsDock->addData(vec, 3);
 }
 
 void MainWindow::save() {

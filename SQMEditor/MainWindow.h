@@ -30,6 +30,7 @@ public slots:
     void openFolder();
     void openFile(const QString &file);
     void run();
+    void done();
     
     void save();
     

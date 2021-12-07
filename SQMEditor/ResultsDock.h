@@ -16,6 +16,9 @@ public:
     ResultsDock(QWidget *parent = nullptr);
     ~ResultsDock();
     
+    void clear();
+    void addData(const QVector<int> &probs, int measure);
+    
 private:
     QBarSeries *_probsSeries;
     QBarSeries *_measureSeries;
