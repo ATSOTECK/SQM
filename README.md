@@ -1,2 +1,5 @@
-# SQM
-Skyler's Quantum Madness
+# SQM - Skyler's Quantum Madness
+
+![screenshot](screenshot.png)
+
+WIP
