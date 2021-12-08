@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
     
     connect(_ui->actionOpen_Folder, SIGNAL(triggered()), this, SLOT(openFolder()));
     connect(_actionOpen, SIGNAL(triggered()), this, SLOT(openFolder()));
+    connect(_ui->actionNew_File, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(_ui->actionRun, SIGNAL(triggered()), this, SLOT(run()));
     connect(_actionRun, SIGNAL(triggered()), this, SLOT(run()));
     connect(_ui->actionClear_Console, SIGNAL(triggered()), this, SLOT(clearConsole()));
@@ -121,6 +122,21 @@ void MainWindow::openFile(const QString &file) {
     e->openFile(file);
     
     _centralDocument->addWidget(e, e->getName());
+    connect(e, SIGNAL(statusInfoChanged(QString)), this, SLOT(updateStatusInfoLabel(QString)));
+}
+
+void MainWindow::newFile() {
+    QString file = QFileDialog::getSaveFileName(this, "New File", QDir::homePath() + "/Documents", "SQM Files (*.sqm)");
+    if (file.isEmpty()) {
+        return;
+    }
+    
+    QString name = file.right(file.length() - file.lastIndexOf('/') - 1);
+    CodeEditor *e = new CodeEditor(name, this);
+    e->setFilePath(file);
+    e->saveFile();
+    _centralDocument->addWidget(e, e->getName());
+    
     connect(e, SIGNAL(statusInfoChanged(QString)), this, SLOT(updateStatusInfoLabel(QString)));
 }
 

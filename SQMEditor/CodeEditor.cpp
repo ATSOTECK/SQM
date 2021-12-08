@@ -1428,6 +1428,10 @@ bool CodeEditor::openFile(const QString &path) {
     return true;
 }
 
+void CodeEditor::setFilePath(const QString &path) {
+    _filePath = path;
+}
+
 void CodeEditor::setModified() {
     _isModified = true;
     _undoStack->push(new AddText());

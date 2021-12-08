@@ -27,7 +27,7 @@ class CodeEditor : public QPlainTextEdit {
     Q_OBJECT
 
 public:
-    CodeEditor(QString name, QWidget *parent = 0);
+    CodeEditor(QString name, QWidget *parent = nullptr);
     ~CodeEditor();
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
@@ -58,6 +58,7 @@ public:
     bool saveToFile(QString &path);
     bool saveFile();
     bool openFile(const QString &path);
+    void setFilePath(const QString &path);
     
     void lineNumberAreaMousePressEvent(QMouseEvent *e);
     void lineNumberAreaMouseMoveEvent(QMouseEvent *e);
