@@ -1,7 +1,27 @@
+// basic.sqm - For a basic demo.
+
+void testSqrtSwap() {
+    Qubit x(One, 1);
+    Qubit y(Zero, 1);
+    hadamard(x);
+    hadamard(y);
+
+    sqrtSwap(x, y);
+
+    print(x);
+    print(y);
+
+    println("x is valid?: " + x.isValid());
+    println("y is valid?: " + y.isValid());
+    
+    x.showProbabilities();
+    println("measure: \n" + x.measure());
+}
+
 void run() {
     Qubit q(Zero, 3);
-    //xGate(q);
     hadamard(q);
+    rxGate(q, 45);
     
     print(q);
     
